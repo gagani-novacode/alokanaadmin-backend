@@ -23,8 +23,12 @@ app.use(cors({
     origin: [
         "https://main.d2rf0qy3sgo7kl.amplifyapp.com",
         "http://localhost:3000"
-    ]
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
 }));
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
