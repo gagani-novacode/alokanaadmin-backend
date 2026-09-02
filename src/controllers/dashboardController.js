@@ -1,4 +1,4 @@
-﻿const TicketOrder = require("../models/TicketOrder");
+const TicketOrder = require("../models/TicketOrder");
 const TicketInventoryOrder = require("../models/TicketInventoryOrder");
 const TicketInventory = require("../models/TicketInventory");
 
@@ -79,18 +79,22 @@ const getDashboardSummary = async (req, res) => {
     // Unique customers
     const uniqueCustomers = await TicketOrder.distinct("customer.email");
 
+    const statusMap = ordersByStatus.reduce((acc, cur) => {
+      acc[cur._id] = cur.count;
+      return acc;
+    }, {});
+
     res.json({
       success: true,
       data: {
         totalOrders,
+        totalPaidOrders: statusMap["PAID"] || 0,
+        totalPaidTickets: totalTicketsSold,
         totalRevenueLKR,
         totalTicketsSold,
         totalAvailableTickets,
         uniqueCustomers: uniqueCustomers.length,
-        ordersByStatus: ordersByStatus.reduce((acc, cur) => {
-          acc[cur._id] = cur.count;
-          return acc;
-        }, {}),
+        ordersByStatus: statusMap,
         paymentMethodBreakdown,
         dailyRevenue,
       },

@@ -1,4 +1,4 @@
-const dns = require("dns");
+﻿const dns = require("dns");
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const express = require("express");
@@ -7,7 +7,9 @@ require("dotenv").config();
 
 const connectDB = require("./config/db");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
+const { protect } = require("./middleware/auth");
 
+const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
 const ordersRoutes = require("./routes/orders");
 const logsRoutes = require("./routes/logs");
@@ -27,15 +29,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/health", (req, res) => {
-    res.json({ success: true, message: "Andarayaya Dashboard API is running 🎉", timestamp: new Date() });
+    res.json({ success: true, message: "Andarayaya Dashboard API is running", timestamp: new Date() });
 });
 
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/orders", ordersRoutes);
-app.use("/api/logs", logsRoutes);
-app.use("/api/customers", customersRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/dashboard", protect, dashboardRoutes);
+app.use("/api/orders", protect, ordersRoutes);
+app.use("/api/logs", protect, logsRoutes);
+app.use("/api/customers", protect, customersRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app; // ← key line
+module.exports = app;

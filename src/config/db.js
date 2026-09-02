@@ -3,7 +3,7 @@
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      dbName: "Andarayaya",
+      dbName: "alokana3red2",
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {

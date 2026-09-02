@@ -1,4 +1,4 @@
-﻿const Log = require("../models/Log");
+const Log = require("../models/Log");
 
 // =============================================================
 // GET /api/logs
@@ -33,8 +33,17 @@ const getLogs = async (req, res) => {
     if (level) filter.level = level.toLowerCase();
     if (context) filter.context = new RegExp(context, "i");
     if (message) filter.message = new RegExp(message, "i");
-    if (customerName)
-      filter.customerFullName = new RegExp(customerName, "i");
+    if (customerName && customerName.trim()) {
+      const regex = new RegExp(customerName.trim(), "i");
+      filter.$or = [
+        { customerFullName: regex },
+        { message: regex },
+        { "meta.customerName": regex },
+        { "meta.customerEmail": regex },
+        { "meta.customer.firstName": regex },
+        { "meta.customer.lastName": regex },
+      ];
+    }
     if (orderId) filter.orderId = orderId;
 
     if (startDate || endDate) {
