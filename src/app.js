@@ -19,7 +19,7 @@ const app = express();
 
 connectDB();
 
-app.use(cors({
+const corsOptions = {
     origin: [
         "https://main.d2rf0qy3sgo7kl.amplifyapp.com",
         "http://localhost:3000"
@@ -27,8 +27,10 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
-}));
-app.options("*", cors());
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
