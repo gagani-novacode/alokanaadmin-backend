@@ -1,9 +1,9 @@
-﻿const dns = require("dns");
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
+﻿//const dns = require("dns");
+//dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
+//require("dotenv").config();
 
 const connectDB = require("./config/db");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
@@ -17,11 +17,12 @@ const customersRoutes = require("./routes/customers");
 
 const app = express();
 
-connectDB();
+// connectDB();
 
 const corsOptions = {
     origin: [
         "https://main.d2rf0qy3sgo7kl.amplifyapp.com",
+        "https://alokanaadmin-frontend.lakshan-nipuna66.workers.dev",
         "http://localhost:3000"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -31,6 +32,14 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
